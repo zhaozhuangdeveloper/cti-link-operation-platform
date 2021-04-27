@@ -1,4 +1,4 @@
-package cn.tinet.operationplatformservice.module.app.deploy.domain.dto;
+package cn.tinet.operationplatformservice.module.app.container.domain.vo;
 
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import lombok.Data;
@@ -7,12 +7,12 @@ import lombok.Data;
  * @Time : 2021/4/4 17:20
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : ContainerVo.java
+ * @File : ContainerVO.java
  * @Software: IntelliJ IDEA
  * @description: 容器列表展示
  **/
 @Data
-public class ContainerVo {
+public class ContainerVO {
 
     /** 容器ID */
     private String id;
@@ -25,7 +25,7 @@ public class ContainerVo {
     /** 容器重启次数 */
     private Integer restartCount;
 
-    public ContainerVo(ContainerStatus containerStatus){
+    public ContainerVO(ContainerStatus containerStatus){
         this.id = containerStatus.getContainerID();
         this.name = containerStatus.getName();
         this.image = containerStatus.getImage();

@@ -1,20 +1,17 @@
 package cn.tinet.operationplatformservice.module.app.deploy;
 
-import cn.tinet.operationplatformservice.module.app.DockerRepositoryService;
+import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployDTO;
+import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployListVO;
+import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployVo;
 import cn.tinet.operationplatformservice.utils.ResultUtil;
 import cn.tinet.operationplatformservice.vo.ResponseDTO;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeploymentVo;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeploymentsVo;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,34 +31,32 @@ public class DeployController {
     @Autowired
     KubernetesClient kubeClient = null;
 
-    @Autowired
-    DockerRepositoryService dockerRepositoryService = null;
 
     @GetMapping(value = "/deploy/list")
-    public ResponseDTO deployments(@RequestParam(value = "namespaceNames") List<String> namespaceNames) {
-        logger.debug("invoke deployments begin, params: {}", namespaceNames);
-        List<DeploymentsVo> deploymentsVoList = new ArrayList<>();
-        namespaceNames.forEach(namespaceName -> {
-            DeploymentList deploymentList = kubeClient.apps().deployments().inNamespace(namespaceName).list();
+    public ResponseDTO deployList(@RequestParam(value = "namespaces") List<String> namespaces) {
+        logger.debug("invoke deployList begin, params: {}", namespaces);
+        List<DeployListVO> deploys = new ArrayList<>();
+        namespaces.forEach(namespace -> {
+            DeploymentList deploymentList = kubeClient.apps().deployments().inNamespace(namespace).list();
             deploymentList.getItems().forEach(deployment -> {
-                deploymentsVoList.add(new DeploymentsVo(deployment));
+                deploys.add(new DeployListVO(deployment));
             });
         });
-        logger.debug("invoke deployments end, result: {}", deploymentsVoList);
-        return ResultUtil.success(deploymentsVoList);
+        logger.debug("invoke deployList end, result: {}", deploys);
+        return ResultUtil.success(deploys);
     }
 
-    @GetMapping(value = "/deployment")
-    public ResponseDTO deployment(String namespaceName, String deploymentName) {
-        logger.debug("invoke deployments begin, params: {}", deploymentName);
+    @GetMapping(value = "/deploy/detail")
+    public ResponseDTO deployDetail(DeployDTO deployDTO) {
+        logger.debug("invoke deployDetail begin, params: {}", deployDTO);
         Deployment deployment = kubeClient.apps()
                 .deployments()
-                .inNamespace(namespaceName)
-                .withName(deploymentName)
+                .inNamespace(deployDTO.getNamespace())
+                .withName(deployDTO.getName())
                 .get();
-        DeploymentVo deploymentVo = new DeploymentVo(deployment);
-        logger.debug("invoke deployment end, result: {}", deploymentVo);
-        return ResultUtil.success(deploymentVo);
+        DeployVo deployVo = new DeployVo(deployment);
+        logger.debug("invoke deployDetail end, result: {}", deployVo);
+        return ResultUtil.success(deployVo);
     }
 
 /**
@@ -80,19 +75,19 @@ public class DeployController {
                 .updateImage(params);
         return ResultUtil.success();
     }
-
-    @PutMapping("/deployment/restart")
-    public Result restart(@RequestBody DeploymentReq deploymentReq){
-        logger.info("invoke restart begin, params: {}", deploymentReq);
+*/
+    @PutMapping("/deploy/restart")
+    public ResponseDTO deployRestart(@RequestBody DeployDTO deployDTO){
+        logger.debug("invoke deployRestart begin, params: {}", deployDTO);
         kubeClient.apps()
                 .deployments()
-                .inNamespace(deploymentReq.getNamespace())
-                .withName(deploymentReq.getName())
+                .inNamespace(deployDTO.getNamespace())
+                .withName(deployDTO.getName())
                 .rolling()
                 .restart();
         return ResultUtil.success();
     }
-
+/*
     @PutMapping("/deployment/upgrade/yaml")
     public Result upgradeYaml(@RequestBody DeploymentYamlReq deploymentYamlReq){
         InputStream inputStream = new ByteArrayInputStream(deploymentYamlReq.getYaml().getBytes());

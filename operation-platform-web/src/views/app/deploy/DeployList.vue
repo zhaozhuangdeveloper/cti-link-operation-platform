@@ -2,16 +2,15 @@
   <div id="deploy-list">
     <div id="header">
       <div style="float: right">
-        <el-button type="danger" size="mini">创建应用</el-button>
+        <el-button type="danger" size="mini">创建无状态工作负载</el-button>
       </div>
     </div>
     <div id="table" style="border: 1px solid #FFFFFF; padding: 10px; background: #FFFFFF;">
-      <el-button type="danger" :disabled="multipleSelection.length === 0" size="mini">删除应用</el-button>
+      <el-button type="danger" :disabled="multipleSelection.length === 0" size="mini">删除工作负载</el-button>
       <el-table
         ref="multipleTable"
-        :data="deployments.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        :data="deploys.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         tooltip-effect="dark"
-        stripe
         style="width: 100%;"
         :row-key="getRowKey"
         @selection-change="handleSelectionChange">
@@ -22,11 +21,11 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          label="应用名称">
+          label="工作负载名称">
           <template slot-scope="scope">
-            <router-link :to="{name: 'Deployment', params: { namespaceName: scope.row.namespaceName, deploymentName: scope.row.name, activeName: 'pod'}}" style="text-decoration:none; color: #409EFF;">
+            <a style="color: #409EFF; cursor: pointer" @click="deployDetail(scope.row)">
               {{ scope.row.name }}
-            </router-link>
+            </a>
           </template>
         </el-table-column>
         <el-table-column
@@ -41,13 +40,24 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="namespaceName"
+          label="版本"
+          min-width="150px">
+          <template slot-scope="scope">
+            <ul style="list-style-type: none;">
+              <li v-for="(image, index) in scope.row.images" :key="index">{{ image }}</li>
+            </ul>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="namespace"
           label="命名空间">
         </el-table-column>
         <el-table-column
           align="center"
           prop="creationTimestamp"
-          label="创建时间">
+          label="创建时间"
+        :formatter="formatDate">
         </el-table-column>
         <el-table-column
           align="center"
@@ -84,7 +94,7 @@
         :page-sizes="[5, 10, 15, 20]"
         :page-size="pagesize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="deployments.length">
+        :total="deploys.length">
       </el-pagination>
     </div>
   </div>
@@ -92,13 +102,14 @@
 
 <script>
 import { deployApi } from '@/api/app/deploy'
+import { getDate } from '@/lib/util'
 
 export default {
   name: 'DeployList',
   data () {
     return {
-      deployments: [],
-      namespaceNames: ['default', 'kube-system', 'kubernetes-dashboard'],
+      deploys: [],
+      namespaces: ['default'],
       multipleSelection: [],
       currentPage: 1,
       pagesize: 10
@@ -122,50 +133,32 @@ export default {
     }
   },
   methods: {
+    formatDate (row, column) {
+      return getDate(row.creationTimestamp)
+    },
     /**
-     * 获取deployments数据
+     * 获取deploys数据
      */
     deployList () {
-      deployApi.deployList({ namespaceNames: this.namespaceNames }).then(res => {
-        this.deployments = res.data
+      deployApi.deployList({ namespaces: this.namespaces }).then(res => {
+        this.deploys = res.data
       }).catch(err => {
         console.log(err)
       })
     },
     handleRestart (row) {
       var _this = this
-      this.$http({
-        method: 'put',
-        url: '/app/deployment/restart',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-        },
-        data: {
-          namespace: row.namespace,
-          name: row.name
-        }
-      }).then(response => {
-        if (response.status === 200) {
-          if (response.data.code === '00000') {
-            _this.$notify({
-              title: '成功',
-              message: '应用更新成功!',
-              type: 'success'
-            })
-          } else {
-            _this.$notify({
-              title: response.data.code,
-              message: response.data.description,
-              type: 'error'
-            })
-          }
-        }
-      }).catch(error => {
-        console.log('请求异常: ', error.message)
-        this.$notify.error({
-          title: '错误',
-          message: '应用更新失败，请联系管理员!'
+      deployApi.deployRestart({
+        namespace: row.namespace,
+        name: row.name
+      }).then(res => {
+        _this.$notify({
+          title: '成功',
+          message: '应用更新成功!',
+          type: 'success'
         })
+      }).catch(err => {
+        console.log(err)
       })
     },
     handleUpgrade (row) {
@@ -188,6 +181,17 @@ export default {
     },
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage
+    },
+    deployDetail (row) {
+      var deploy = {
+        name: row.name,
+        namespace: row.namespace
+      }
+      this.$store.commit('setDeploy', deploy)
+      this.$store.commit('setActive', 'podList')
+      this.$router.push({
+        name: 'DeployDetail'
+      })
     }
   }
 }

@@ -1,20 +1,24 @@
-package cn.tinet.operationplatformservice.module.app.deploy.domain.dto;
+package cn.tinet.operationplatformservice.module.app.deploy.domain.vo;
 
+import cn.tinet.operationplatformservice.utils.DateUtil;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Time : 2021/4/16 16:51
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : DeploymentsVo.java
+ * @File : DeployListVO.java
  * @Software: IntelliJ IDEA
- * @description:
+ * @description: deploy列表展示
  **/
 @Data
 @NoArgsConstructor
-public class DeploymentsVo{
+public class DeployListVO {
     /** deployment id */
     private String id;
     /** 名称 */
@@ -28,18 +32,20 @@ public class DeploymentsVo{
     /** 全部副本数 */
     private Integer replicas;
     /** 命名空间 */
-    private String namespaceName;
+    private String namespace;
     /** 创建时间 */
-    private String creationTimestamp;
+    private Long creationTimestamp;
+    /** 镜像 */
+    private List<String> images = new ArrayList<>();
 
-    public DeploymentsVo(Deployment deployment){
+    public DeployListVO(Deployment deployment){
         this.id = deployment.getMetadata().getUid();
         this.name = deployment.getMetadata().getName();
         this.readyReplicas = deployment.getStatus().getReadyReplicas();
         this.updateReplicas = deployment.getStatus().getUpdatedReplicas();
         this.replicas = deployment.getStatus().getReplicas();
-        this.namespaceName = deployment.getMetadata().getNamespace();
-        this.creationTimestamp = deployment.getMetadata().getCreationTimestamp();
+        this.namespace = deployment.getMetadata().getNamespace();
+        this.creationTimestamp = DateUtil.getTimestamp(deployment.getMetadata().getCreationTimestamp());
         if (this.readyReplicas == null){
             this.readyReplicas = 0;
         }
@@ -55,5 +61,9 @@ public class DeploymentsVo{
         }else if (this.readyReplicas > 0){
             this.status = "可用";
         }
+        deployment.getSpec().getTemplate().getSpec().getContainers().forEach(container -> {
+            images.add(container.getImage());
+        });
+
     }
 }

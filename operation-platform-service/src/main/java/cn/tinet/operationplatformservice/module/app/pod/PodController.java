@@ -1,9 +1,9 @@
-package cn.tinet.operationplatformservice.module.app.deploy;
+package cn.tinet.operationplatformservice.module.app.pod;
 
+import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployDTO;
 import cn.tinet.operationplatformservice.utils.ResultUtil;
 import cn.tinet.operationplatformservice.vo.ResponseDTO;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.PodReq;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.PodVo;
+import cn.tinet.operationplatformservice.module.app.pod.domain.vo.PodListVO;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -33,24 +33,24 @@ public class PodController {
     @Autowired
     KubernetesClient kubeClient = null;
 
-    @GetMapping(value = "/pods")
-    public ResponseDTO pods(PodReq podReq) {
-        logger.info("invoke pods begin, params: {}", podReq);
+    @GetMapping(value = "/pod/list")
+    public ResponseDTO podList(DeployDTO deployDTO) {
+        logger.debug("invoke podList begin, params: {}", deployDTO);
         Deployment deployment = kubeClient.apps()
                 .deployments()
-                .inNamespace(podReq.getNamespaceName())
-                .withName(podReq.getDeploymentName())
+                .inNamespace(deployDTO.getNamespace())
+                .withName(deployDTO.getName())
                 .get();
         PodList podList = kubeClient.pods()
-                .inNamespace(podReq.getNamespaceName())
+                .inNamespace(deployDTO.getNamespace())
                 .withLabelSelector(deployment.getSpec().getSelector())
                 .list();
-        List<PodVo> podVoList = new ArrayList<>();
+        List<PodListVO> pods = new ArrayList<>();
         podList.getItems().forEach(pod -> {
-            podVoList.add(new PodVo(pod));
+            pods.add(new PodListVO(pod));
         });
-        //logger.info("invoke pods end, result: {}", podVoList);
-        return ResultUtil.success(podVoList);
+        logger.debug("invoke podList end, result: {}", pods);
+        return ResultUtil.success(pods);
     }
 
 }

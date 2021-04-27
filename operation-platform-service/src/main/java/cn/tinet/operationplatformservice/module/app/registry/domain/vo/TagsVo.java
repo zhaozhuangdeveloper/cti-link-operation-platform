@@ -1,4 +1,4 @@
-package cn.tinet.operationplatformservice.module.app.deploy.domain.dto;
+package cn.tinet.operationplatformservice.module.app.registry.domain.vo;
 
 import lombok.Data;
 

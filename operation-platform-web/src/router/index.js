@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '@/store'
 import Login from '@/views/login/Login'
 import cookie from '@/lib/cookie'
-import { localRead } from '@/lib/local'
 import { app } from './module/app'
 
 Vue.use(VueRouter)
@@ -39,12 +37,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
-// 防止用户刷新丢失登录信息
-if (Object.keys(store.state.user.userLoginInfo).length === 0 && localRead('userLoginInfo')
-) {
-  store.commit('setUserLoginInfo', JSON.parse(localRead('userLoginInfo')))
-}
 
 const LOGIN_PAGE_NAME = 'Login'
 

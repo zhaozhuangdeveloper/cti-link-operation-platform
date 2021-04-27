@@ -1,7 +1,7 @@
-package cn.tinet.operationplatformservice.module.app.impl;
+package cn.tinet.operationplatformservice.module.app.registry.impl;
 
-import cn.tinet.operationplatformservice.module.app.DockerRepositoryService;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

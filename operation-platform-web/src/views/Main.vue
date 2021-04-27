@@ -53,10 +53,10 @@
           <el-submenu index="application">
             <template slot="title">
               <i class="el-icon-menu"></i>
-              <span>服务管理</span>
+              <span>工作负载</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/app/deploy/list">无状态服务</el-menu-item>
+              <el-menu-item index="/app/deploy/list">无状态负载</el-menu-item>
               <el-menu-item index="/home/app/sts" disabled>有状态服务</el-menu-item>
             </el-menu-item-group>
           </el-submenu>

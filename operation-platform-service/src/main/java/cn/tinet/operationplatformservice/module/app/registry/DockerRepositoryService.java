@@ -1,7 +1,7 @@
-package cn.tinet.operationplatformservice.module.app;
+package cn.tinet.operationplatformservice.module.app.registry;
 
 
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
 
 /**
  * @Time : 2021/4/16 15:37

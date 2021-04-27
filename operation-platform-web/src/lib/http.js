@@ -85,6 +85,12 @@ export const postAxios = (url, data, loading) => {
   })
 }
 
+export const putAxios = (url, data, loading) => {
+  return axios.put(url, data, {
+    loading: loading
+  })
+}
+
 export const getAxios = (url, data, loading) => {
   return axios.get(url, {
     params: data,

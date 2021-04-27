@@ -1,7 +1,7 @@
-package cn.tinet.operationplatformservice.module.app.impl;
+package cn.tinet.operationplatformservice.module.app.registry.impl;
 
-import cn.tinet.operationplatformservice.module.app.DockerRepositoryService;
-import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
