@@ -1,7 +1,8 @@
 package cn.tinet.operationplatformservice.module.app.registry;
 
 
-import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO;
 
 /**
  * @Time : 2021/4/16 15:37
@@ -12,7 +13,5 @@ import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
  * @description:
  **/
 public interface DockerRepositoryService {
-    public TagsVo tags(String repoNamespaceName, String repoName);
-
-    public String image(String repoNamespaceName, String repoName, String tag);
+    public TagListVO tagList(TagListDTO tagListDTO);
 }

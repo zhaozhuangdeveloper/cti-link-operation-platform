@@ -1,7 +1,8 @@
 package cn.tinet.operationplatformservice.module.app.registry.impl;
 
 import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
-import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,7 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(value = "docker.repository.type", havingValue = "aliyun")
 public class AliyunRepositoryServiceImpl implements DockerRepositoryService {
     @Override
-    public TagsVo tags(String repoNamespaceName, String repoName) {
-        return null;
-    }
-
-    @Override
-    public String image(String repoNamespaceName, String repoName, String tag) {
+    public TagListVO tagList(TagListDTO tagListDTO) {
         return null;
     }
 }

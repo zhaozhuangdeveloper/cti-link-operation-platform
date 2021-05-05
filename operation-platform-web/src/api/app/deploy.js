@@ -11,5 +11,12 @@ export const deployApi = {
   // 获取deploy详情
   deployDetail: data => {
     return getAxios('/app/deploy/detail', data, true)
+  },
+  // 获取deploy信息
+  getDeployUpgrade: data => {
+    return getAxios('/app/deploy/upgrade', data, true)
+  },
+  deployUpgrade: data => {
+    return putAxios('/app/deploy/upgrade', data, true)
   }
 }

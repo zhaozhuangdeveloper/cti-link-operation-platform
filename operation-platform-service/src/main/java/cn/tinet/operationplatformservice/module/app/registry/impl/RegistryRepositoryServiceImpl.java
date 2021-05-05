@@ -1,13 +1,18 @@
 package cn.tinet.operationplatformservice.module.app.registry.impl;
 
 import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
-import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagsVo;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.Tag;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 
 /**
  * @Time : 2021/4/16 15:39
@@ -27,15 +32,22 @@ public class RegistryRepositoryServiceImpl implements DockerRepositoryService {
     public String registryEndpoint = null;
 
     @Override
-    public TagsVo tags(String repoNamespaceName, String repoName) {
+    public TagListVO tagList(TagListDTO tagListDTO) {
         RestTemplate restTemplate = new RestTemplate();
-        TagsVo tagsVo = restTemplate.getForObject(registryEndpoint + "/v2/"
-                + repoNamespaceName + "/" + repoName + "/tags/list", TagsVo.class);
-        return tagsVo;
-    }
+        TagDTO tagDTO = restTemplate.getForObject(registryEndpoint + "/v2/"
+                + tagListDTO.getRepoNamespace() + "/" + tagListDTO.getRepoName() + "/tags/list", TagDTO.class);
+        TagListVO tagListVO = TagListVO.builder()
+                .name(tagDTO.getName())
+                .tags(new ArrayList<>())
+                .build();
 
-    @Override
-    public String image(String repoNamespaceName, String repoName, String tag) {
-        return registryEndpoint + "/" + repoNamespaceName + "/" + repoName + ":" + tag;
+        for (String label : tagDTO.getTags()) {
+            Tag tag = new Tag();
+            tag.setLabel(label);
+            tag.setValue(registryEndpoint.substring(7) +"/" + tagListDTO.getRepoNamespace()
+                    + "/" + tagListDTO.getRepoName() + ":" + label);
+            tagListVO.getTags().add(tag);
+        }
+        return tagListVO;
     }
 }

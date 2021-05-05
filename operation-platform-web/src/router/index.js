@@ -22,7 +22,8 @@ const main = {
   children: [
     {
       path: '',
-      component: () => import('@/views/home/Home')
+      component: () => import('@/views/home/Home'),
+      name: 'Home'
     },
     ...app
   ]

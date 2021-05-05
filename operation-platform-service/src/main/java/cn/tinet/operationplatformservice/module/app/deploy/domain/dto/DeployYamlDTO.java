@@ -6,12 +6,12 @@ import lombok.Data;
  * @Time : 2021/4/13 15:39
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : DeploymentYamlReq.java
+ * @File : DeployYamlDTO.java
  * @Software: IntelliJ IDEA
  * @description:
  **/
 @Data
-public class DeploymentYamlReq {
+public class DeployYamlDTO {
     private String name;
     private String namespace;
     private String yaml;

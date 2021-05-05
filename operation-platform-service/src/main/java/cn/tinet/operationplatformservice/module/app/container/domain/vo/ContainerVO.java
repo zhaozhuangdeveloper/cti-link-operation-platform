@@ -1,6 +1,6 @@
 package cn.tinet.operationplatformservice.module.app.container.domain.vo;
 
-import io.fabric8.kubernetes.api.model.ContainerStatus;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,9 +9,10 @@ import lombok.Data;
  * @Email : zhaozhuang@ti-net.com.cn
  * @File : ContainerVO.java
  * @Software: IntelliJ IDEA
- * @description: 容器列表展示
+ * @description: 容器状态展示
  **/
 @Data
+@Builder
 public class ContainerVO {
 
     /** 容器ID */
@@ -24,18 +25,5 @@ public class ContainerVO {
     private String image;
     /** 容器重启次数 */
     private Integer restartCount;
-
-    public ContainerVO(ContainerStatus containerStatus){
-        this.id = containerStatus.getContainerID();
-        this.name = containerStatus.getName();
-        this.image = containerStatus.getImage();
-        this.restartCount = containerStatus.getRestartCount();
-        boolean ready = containerStatus.getReady();
-        if (ready){
-            this.status = "Running";
-        }else{
-            this.status = "NotReady";
-        }
-    }
 
 }

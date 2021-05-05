@@ -1,12 +1,9 @@
 package cn.tinet.operationplatformservice.module.app.pod.domain.vo;
 
 import cn.tinet.operationplatformservice.module.app.container.domain.vo.ContainerVO;
-import cn.tinet.operationplatformservice.utils.DateUtil;
-import io.fabric8.kubernetes.api.model.ContainerStatus;
-import io.fabric8.kubernetes.api.model.Pod;
+import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +14,7 @@ import java.util.List;
  * @Software: IntelliJ IDEA
  **/
 @Data
+@Builder
 public class PodListVO {
     /** pod id */
     private String id;
@@ -37,24 +35,5 @@ public class PodListVO {
     /** pod内容器数量 */
     private Integer totalContainers = 0;
     /** pod内容器 */
-    private List<ContainerVO> containers = new ArrayList<>();
-
-    public PodListVO(Pod pod){
-        this.id = pod.getMetadata().getUid();
-        this.name = pod.getMetadata().getName();
-        this.hostIP = pod.getStatus().getHostIP();
-        this.podIP = pod.getStatus().getPodIP();
-        this.creationTimestamp = DateUtil.getTimestamp(pod.getMetadata().getCreationTimestamp());
-        List<ContainerStatus> containerStatuses = pod.getStatus().getContainerStatuses();
-        this.totalContainers = containerStatuses.size();
-        containerStatuses.forEach(containerStatus -> {
-            this.containers.add(new ContainerVO(containerStatus));
-            this.restartCount += containerStatus.getRestartCount();
-            boolean ready = containerStatus.getReady();
-            if (ready) {
-                this.readyContainers++;
-            }
-        });
-        this.status = pod.getStatus().getPhase();
-    }
+    private List<ContainerVO> containers;
 }

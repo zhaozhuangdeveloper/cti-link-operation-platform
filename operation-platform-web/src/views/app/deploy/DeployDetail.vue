@@ -45,6 +45,9 @@
         <el-tab-pane label="实例列表" name="podList" lazy>
           <PodList :deploy="this.$store.state.app.deploy"></PodList>
         </el-tab-pane>
+        <el-tab-pane label="版本更新" name="deployUpgrade" lazy>
+          <DeployUpgrade :deploy="this.$store.state.app.deploy"></DeployUpgrade>
+        </el-tab-pane>
       </el-tabs>
     </div>
     <el-dialog
@@ -66,10 +69,12 @@ import YamlEditor from '@/components/module/app/deploy/YamlEditor'
 import PodList from '@/views/app/pod/PodList'
 import { deployApi } from '@/api/app/deploy'
 import { getDate } from '@/lib/util'
+import DeployUpgrade from '@/views/app/deploy/DeployUpgrade'
 
 export default {
   name: 'DeployDetail',
   components: {
+    DeployUpgrade,
     YamlEditor,
     PodList
   },
