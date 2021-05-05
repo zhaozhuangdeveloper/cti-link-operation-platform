@@ -162,12 +162,14 @@ export default {
       })
     },
     handleUpgrade (row) {
+      var deploy = {
+        name: row.name,
+        namespace: row.namespace
+      }
+      this.$store.commit('setDeploy', deploy)
+      this.$store.commit('setActive', 'deployUpgrade')
       this.$router.push({
-        name: 'Deployment',
-        params: {
-          deployment: row,
-          activeName: 'upgrade'
-        }
+        name: 'DeployDetail'
       })
     },
     handleSelectionChange (val) {

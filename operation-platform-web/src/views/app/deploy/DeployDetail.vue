@@ -56,7 +56,7 @@
       width="40%" center>
       <yaml-editor v-model="deploy.yaml"/>
       <span slot="footer" class="dialog-footer">
-        <a class="el-button el-button--mini" style="color: #606266;" @click="upgradeYaml">修 改</a>
+        <a class="el-button el-button--mini" style="color: #606266;" @click="deployUpgradeYaml">修 改</a>
         <a class="el-button el-button--mini" style="text-decoration:none; color: #606266;" :href="href()"
            :download="download()">下 载</a>
     </span>
@@ -86,6 +86,7 @@ export default {
     }
   },
   created () {
+    this.active = this.$store.state.app.active
     this.deployDetail(this.$store.state.app.deploy)
   },
   filters: {
@@ -115,7 +116,20 @@ export default {
     download () {
       return this.deploy.name + '.yaml'
     },
-    upgradeYaml () {
+    deployUpgradeYaml () {
+      var _this = this
+      deployApi.deployUpgradeYaml({
+        yaml: _this.deploy.yaml
+      }).then(res => {
+        _this.yamlVisible = false
+        _this.$notify({
+          title: '成功',
+          message: '应用升级成功!',
+          type: 'success'
+        })
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

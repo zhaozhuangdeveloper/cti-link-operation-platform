@@ -12,7 +12,5 @@ import lombok.Data;
  **/
 @Data
 public class DeployYamlDTO {
-    private String name;
-    private String namespace;
     private String yaml;
 }

@@ -83,7 +83,7 @@ export default {
       deployApi.deployUpgrade(data).then(res => {
         _this.$notify({
           title: '成功',
-          message: '应用更新成功!',
+          message: '应用升级成功!',
           type: 'success'
         })
       }).catch(err => {

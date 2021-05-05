@@ -3,6 +3,7 @@ package cn.tinet.operationplatformservice.module.app.deploy;
 import cn.tinet.operationplatformservice.module.app.container.domain.vo.ContainerUpgradeVO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployDTO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployUpgradeDTO;
+import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployYamlDTO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployListVO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployUpgradeVO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployVO;
@@ -21,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +104,7 @@ public class DeployController {
         deployment.getMetadata().setManagedFields(null);
         deployment.setStatus(null);
         try {
-            deployVo.setYaml(SerializationUtils.dumpAsYaml(deployment));
+            deployVo.setYaml(SerializationUtils.dumpWithoutRuntimeStateAsYaml(deployment));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -166,22 +169,13 @@ public class DeployController {
                 .restart();
         return ResultUtil.success();
     }
-/*
-    @PutMapping("/deployment/upgrade/yaml")
-    public Result upgradeYaml(@RequestBody DeploymentYamlReq deploymentYamlReq){
-        InputStream inputStream = new ByteArrayInputStream(deploymentYamlReq.getYaml().getBytes());
-        Deployment deployment = kubeClient.apps()
-                .deployments()
-                .load(inputStream)
-                .get();
-        kubeClient.apps()
-                .deployments()
-                .inNamespace(deploymentYamlReq.getNamespace())
-                .withName(deploymentYamlReq.getName())
-                .replace(deployment);
+
+    @PutMapping("/deploy/upgrade/yaml")
+    public ResponseDTO deployUpgradeYaml(@RequestBody DeployYamlDTO deployYamlDTO){
+        InputStream inputStream = new ByteArrayInputStream(deployYamlDTO.getYaml().getBytes());
+        kubeClient.load(inputStream).createOrReplace();
         return ResultUtil.success();
     }
-*/
 
     public String getStatus(int readyReplicas, int updateReplicas, int replicas){
         String status = "";

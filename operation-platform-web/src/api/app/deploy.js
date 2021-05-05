@@ -16,7 +16,11 @@ export const deployApi = {
   getDeployUpgrade: data => {
     return getAxios('/app/deploy/upgrade', data, true)
   },
+  // 更新deploy
   deployUpgrade: data => {
     return putAxios('/app/deploy/upgrade', data, true)
+  },
+  deployUpgradeYaml: data => {
+    return putAxios('/app/deploy/upgrade/yaml', data, true)
   }
 }
