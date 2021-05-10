@@ -6,37 +6,25 @@
         {{ container.name }}
       </div>
     </div>
-    <div id="container-content" style="clear: left">
+    <div id="container-content" style="clear: left;">
       <div :key="index" v-for="(container, index) in deployUpgrade.containers" class="container-content"
            v-show="activeIndex == index">
-        <el-row>
-          <el-col :span=2>
-            当前镜像
-          </el-col>
-          <el-col v-once :span=10>
-            {{ container.image }}
-          </el-col>
-        </el-row>
-        <br/>
-        <el-row>
-          <el-col :span=2>
-            更新版本
-          </el-col>
-          <el-col :span=10 style="color: #526ecc;">
-            <el-select v-model="container.image"
-                       placeholder="请选择" style="width: 400px">
-              <el-option
-                v-for="tag in container.tags"
-                :key="tag.value"
-                :label="tag.label"
-                :value="tag.value">
-              </el-option>
-            </el-select>
-          </el-col>
-        </el-row>
+        <a class="label">当前版本: </a>
+        <strong> {{ container.image }}</strong>
+        <br/><br/>
+        <a class="label">更新版本: </a>
+        <el-select v-model="container.image"
+                   placeholder="请选择" size="mini">
+          <el-option
+            v-for="tag in container.tags"
+            :key="tag.value"
+            :label="tag.label"
+            :value="tag.value">
+          </el-option>
+        </el-select>
       </div>
       <div id="submit">
-        <el-button @click="upgrade" style="float: right; width: 150px;" type="danger">提交</el-button>
+        <el-button @click="upgrade" style="float: right; width: 150px;" class="button">提交</el-button>
       </div>
     </div>
   </div>
@@ -132,5 +120,14 @@ export default {
 
 #submit {
   margin-top: 20px;
+}
+
+.label {
+  color: #888;
+}
+
+.button {
+  background: #c7000b;
+  color: #FFF
 }
 </style>

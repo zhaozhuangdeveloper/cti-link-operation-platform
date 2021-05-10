@@ -1,9 +1,9 @@
 <template>
   <div id="main">
-    <el-header>
+    <el-header height="50px">
     </el-header>
     <el-container>
-      <el-aside width="200px" style="min-height: calc(100vh - 60px);">
+      <el-aside width="180px" style="min-height: calc(100vh - 50px);">
         <el-menu
           default-active="1"
           class="el-menu-vertical-demo"
@@ -95,9 +95,10 @@ export default {
 
 <style scoped>
 .el-header {
-  background: bisque;
+  background: #282b33;
 }
 .el-main{
   background: #eef0f5;
+  padding: 0px;
 }
 </style>

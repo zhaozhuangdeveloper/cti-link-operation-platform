@@ -1,6 +1,6 @@
 <template>
   <div id="pod-list">
-    <el-button type="danger" :disabled="multipleSelection.length ===0 ? true: false" size="mini">删除实例</el-button>
+    <el-button :disabled="multipleSelection.length ===0 ? true: false" size="mini">删除实例</el-button>
     <el-table
       :data="pods"
       style="width: 100%"

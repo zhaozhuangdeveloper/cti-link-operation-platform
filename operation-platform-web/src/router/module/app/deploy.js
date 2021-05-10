@@ -5,7 +5,7 @@ export const deploy = [
     component: () => import('@/views/app/deploy/DeployList')
   },
   {
-    path: 'deploy/detail',
+    path: 'deploy/namespace/:namespace/name/:name',
     name: 'DeployDetail',
     component: () => import('@/views/app/deploy/DeployDetail')
   }

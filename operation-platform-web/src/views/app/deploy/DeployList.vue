@@ -2,16 +2,22 @@
   <div id="deploy-list">
     <div id="header">
       <div style="float: right">
-        <el-button type="danger" size="mini">创建无状态工作负载</el-button>
+        <el-button size="mini" class="button">创建无状态工作负载</el-button>
       </div>
     </div>
-    <div id="table" style="border: 1px solid #FFFFFF; padding: 10px; background: #FFFFFF;">
-      <el-button type="danger" :disabled="multipleSelection.length === 0" size="mini">删除工作负载</el-button>
+    <div id="table" style="border: 1px solid #FFFFFF; padding: 10px; background: #FFFFFF; min-height: calc(100vh - 200px);">
+      <el-button :disabled="multipleSelection.length === 0" size="mini">删除工作负载</el-button>
+      <el-button size="mini">选择命名空间</el-button>
+      <el-button size="mini">全部状态</el-button>
+      <el-button size="mini">搜索</el-button>
       <el-table
+        :header-cell-style="{
+            'background-color': '#f2f5fc'
+        }"
         ref="multipleTable"
         :data="deploys.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         tooltip-effect="dark"
-        style="width: 100%;"
+        style="width: 100%; margin-top: 10px"
         :row-key="getRowKey"
         @selection-change="handleSelectionChange">
         <el-table-column
@@ -41,11 +47,9 @@
         <el-table-column
           align="center"
           label="版本"
-          min-width="150px">
+          min-width="250px">
           <template slot-scope="scope">
-            <ul style="list-style-type: none;">
-              <li v-for="(image, index) in scope.row.images" :key="index">{{ image }}</li>
-            </ul>
+            <a v-for="(image, index) in scope.row.images" :key="index">{{ image }}<br /></a>
           </template>
         </el-table-column>
         <el-table-column
@@ -65,14 +69,14 @@
           <template slot-scope="scope">
             <el-row>
               <el-col :span="4" :offset="6">
-                <el-button @click="handleRestart(scope.row)" type="text">重启</el-button>
+                <el-button @click="handleRestart(scope.row)" type="text" size="mini">重启</el-button>
               </el-col>
               <el-col :span="4">
-                <el-button @click="handleUpgrade(scope.row)" type="text">升级</el-button>
+                <el-button @click="handleUpgrade(scope.row)" type="text" size="mini">升级</el-button>
               </el-col>
               <el-col :span="6">
                 <el-dropdown trigger="click">
-                  <el-button class="el-dropdown-link" type="text">
+                  <el-button class="el-dropdown-link" type="text" size="mini">
                     更多<i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
@@ -185,14 +189,15 @@ export default {
       this.currentPage = currentPage
     },
     deployDetail (row) {
-      var deploy = {
+      var data = {
         name: row.name,
         namespace: row.namespace
       }
-      this.$store.commit('setDeploy', deploy)
       this.$store.commit('setActive', 'podList')
+      this.$store.commit('setDeploy', data)
       this.$router.push({
-        name: 'DeployDetail'
+        name: 'DeployDetail',
+        params: data
       })
     }
   }
@@ -206,5 +211,13 @@ export default {
 }
 #header {
   height: 40px;
+}
+.button {
+  background: #c7000b;
+  color: #FFF
+}
+
+#deploy-list {
+  padding: 10px;
 }
 </style>
