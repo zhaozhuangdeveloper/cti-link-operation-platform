@@ -3,7 +3,7 @@ package cn.tinet.operationplatformservice.module.session;
 import cn.tinet.operationplatformservice.module.session.domain.dto.LoginDTO;
 import cn.tinet.operationplatformservice.module.session.domain.vo.LoginDetailVO;
 import cn.tinet.operationplatformservice.utils.RedisUtil;
-import cn.tinet.operationplatformservice.utils.ResultUtil;
+import cn.tinet.operationplatformservice.utils.ResponseUtil;
 import cn.tinet.operationplatformservice.vo.ResponseDTO;
 import cn.tinet.operationplatformservice.vo.ResponseEnum;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseDTO login(@RequestBody LoginDTO loginDTO){
-        logger.info("invote login begin, params: {}", loginDTO);
+        logger.debug("invote login begin, params: {}", loginDTO);
         LoginDetailVO loginDetailVO = userService.login(loginDTO);
         ResponseDTO responseDTO = null;
         if (null != loginDetailVO){
@@ -61,7 +61,7 @@ public class LoginController {
             Map<String, Object> map = new HashMap<>();
             map.put("token", token);
             map.put("userInfo", loginDetailVO);
-            responseDTO = ResultUtil.success(map);
+            responseDTO = ResponseUtil.success(map);
         }else{
             String key = MessageFormat.format(RedisUtil.RedisKeyDef.SYSTEMUSER_LOGIN_FAILED, loginDTO.getUserName());
             if (redisIntUtil.hasKey(key)){
@@ -69,9 +69,9 @@ public class LoginController {
                 redisIntUtil.set(key, ++fail);
                 redisIntUtil.expire(key, 10, TimeUnit.MINUTES);
             }
-            responseDTO = ResultUtil.error(ResponseEnum.PASSWORD_ERROR);
+            responseDTO = ResponseUtil.error(ResponseEnum.PASSWORD_ERROR);
         }
-        logger.info("invoke login end, result: {}", responseDTO);
+        logger.debug("invoke login end, result: {}", responseDTO);
         return responseDTO;
     }
 

@@ -1,8 +1,8 @@
-import { getAxios, getAxiosSerializer, putAxios } from '@/lib/http'
+import { getAxios, putAxios } from '@/lib/http'
 export const deployApi = {
   // 获取deploy列表
-  deployList: data => {
-    return getAxiosSerializer('/app/deploy/list', data)
+  deployList: () => {
+    return getAxios('/app/deploy/list')
   },
   // 重启deploy
   deployRestart: data => {

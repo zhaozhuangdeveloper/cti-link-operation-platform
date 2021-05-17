@@ -38,7 +38,7 @@ public class KubeClientUtil {
             Config config = Config.fromKubeconfig(new String(bytes));
             client = new DefaultKubernetesClient(config);
         } catch (IOException e) {
-            logger.info("IOException: {}", e.getMessage());
+            logger.error("IOException: {}", e.getMessage());
         }
         return client;
     }

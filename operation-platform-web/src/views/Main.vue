@@ -39,15 +39,15 @@
               <el-menu-item index="/home/resource/namespace">命名空间</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="configure" disabled>
+          <el-submenu index="configure">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>配置中心</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/home/configure/configmap">配置项 ConfigMap</el-menu-item>
-              <el-menu-item index="/home/configure/consul">配置项 Consul</el-menu-item>
-              <el-menu-item index="/home/configure/secret">秘钥 Secret</el-menu-item>
+              <el-menu-item index="/configure/configMap/list">配置项 ConfigMap</el-menu-item>
+              <el-menu-item index="/configure/consul/list" disabled>配置项 Consul</el-menu-item>
+              <el-menu-item index="/configure/secret/list" disabled>秘钥 Secret</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="application">
@@ -57,10 +57,19 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="/app/deploy/list">无状态负载</el-menu-item>
-              <el-menu-item index="/home/app/sts" disabled>有状态服务</el-menu-item>
+              <el-menu-item index="/app/sts/list" disabled>有状态负载</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="gateway" disabled>
+            <template slot="title">
+              <i class="el-icon-menu"></i>
+              <span>网关管理</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item index="/home/gateway/servicegateway">业务网关</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="registry" disabled>
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>网关管理</span>

@@ -7,16 +7,16 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
- * @Time : 2021/4/16 16:19
+ * @Time : 2021/5/11 9:57
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : AliyunRepositoryServiceImpl.java
+ * @File : HarborRepositoryServiceImpl.java
  * @Software: IntelliJ IDEA
  * @description:
  **/
-@Service("aliyunRepositoryService")
-@ConditionalOnProperty(value = "docker.repository.type", havingValue = "aliyun")
-public class AliyunRepositoryServiceImpl implements DockerRepositoryService {
+@Service("harborReposioryService")
+@ConditionalOnProperty(value = "docker.repository.type", havingValue = "harbor")
+public class HarborRepositoryServiceImpl implements DockerRepositoryService {
     @Override
     public TagListVO tagList(TagQueryDTO tagQueryDTO) {
         return null;

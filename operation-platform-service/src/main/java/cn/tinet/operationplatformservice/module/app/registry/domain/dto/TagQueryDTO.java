@@ -7,13 +7,13 @@ import lombok.Data;
  * @Time : 2021/4/16 16:30
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : TagListDTO.java
+ * @File : TagQueryDTO.java
  * @Software: IntelliJ IDEA
  * @description:
  **/
 @Data
 @Builder
-public class TagListDTO {
-    private String repoNamespace;
-    private String repoName;
+public class TagQueryDTO {
+    private String namespace;
+    private String name;
 }

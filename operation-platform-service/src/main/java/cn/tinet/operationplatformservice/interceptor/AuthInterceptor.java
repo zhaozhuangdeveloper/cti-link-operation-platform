@@ -1,7 +1,7 @@
 package cn.tinet.operationplatformservice.interceptor;
 
 import cn.tinet.operationplatformservice.utils.RedisUtil;
-import cn.tinet.operationplatformservice.utils.ResultUtil;
+import cn.tinet.operationplatformservice.utils.ResponseUtil;
 import cn.tinet.operationplatformservice.vo.ResponseEnum;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
         Gson gson = new Gson();
-        returnJson(response, gson.toJson(ResultUtil.error(ResponseEnum.UNAUTHORIZED_ACCESS)));
+        returnJson(response, gson.toJson(ResponseUtil.error(ResponseEnum.UNAUTHORIZED_ACCESS)));
         return false;
     }
 

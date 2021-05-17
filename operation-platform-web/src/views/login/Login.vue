@@ -70,5 +70,8 @@ export default {
   width: 100%;
   height: 100%;
   background-image: url(../../assets/images/login-bg.jpg);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-attachment: fixed;
 }
 </style>

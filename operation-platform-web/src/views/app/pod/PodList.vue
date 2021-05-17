@@ -1,7 +1,24 @@
 <template>
   <div id="pod-list">
     <el-button :disabled="multipleSelection.length ===0 ? true: false" size="mini">删除实例</el-button>
+    <div style="float: right;">
+      <el-input
+        style="width: 200px; margin-right: 10px;"
+        placeholder="按实例名搜索"
+        suffix-icon="el-icon-search"
+        v-model="name"
+        clearable
+        size="mini">
+      </el-input>
+      <el-button icon="el-icon-refresh-right" size="mini" plain circle @click="refresh" ></el-button>
+    </div>
     <el-table
+      v-loading="loading"
+      element-loading-text="正在加载数据..."
+      element-loading-spinner="el-icon-loading"
+      :header-cell-style="{
+            'background-color': '#f2f5fc'
+        }"
       :data="pods"
       style="width: 100%"
       :row-key="getKey"
@@ -100,6 +117,8 @@ export default {
   name: 'PodList',
   data () {
     return {
+      loading: true,
+      name: '',
       pods: [],
       multipleSelection: []
     }
@@ -112,25 +131,22 @@ export default {
   created () {
     this.podList()
   },
-  mounted () {
-    var _this = this
-    this.timer = setInterval(function () {
-      _this.podList()
-    }, 5000)
-  },
-  beforeDestroy () {
-    if (this.timer) {
-      clearInterval(this.timer)
-    }
-  },
   methods: {
     formatDate (row, column) {
       return getDate(row.creationTimestamp)
     },
     podList () {
       podApi.podList(this.deploy).then(res => {
+        this.loading = false
         this.pods = res.data
+      }).catch(err => {
+        console.log(err)
       })
+    },
+    refresh () {
+      this.loading = true
+      this.pods = []
+      this.podList()
     },
     handleSelectionChange (val) {
       this.multipleSelection = val

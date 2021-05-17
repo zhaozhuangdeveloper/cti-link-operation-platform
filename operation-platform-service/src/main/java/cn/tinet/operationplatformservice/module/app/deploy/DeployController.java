@@ -8,9 +8,9 @@ import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployListV
 import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployUpgradeVO;
 import cn.tinet.operationplatformservice.module.app.deploy.domain.vo.DeployVO;
 import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
-import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagQueryDTO;
 import cn.tinet.operationplatformservice.utils.DateUtil;
-import cn.tinet.operationplatformservice.utils.ResultUtil;
+import cn.tinet.operationplatformservice.utils.ResponseUtil;
 import cn.tinet.operationplatformservice.vo.ResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -49,33 +49,40 @@ public class DeployController {
 
 
     @GetMapping(value = "/deploy/list")
-    public ResponseDTO deployList(@RequestParam(value = "namespaces") List<String> namespaces) {
-        logger.debug("invoke deployList begin, params: {}", namespaces);
+    public ResponseDTO deployList() {
+        logger.debug("invoke deployList begin, params: {}");
         List<DeployListVO> deploys = new ArrayList<>();
-        namespaces.forEach(namespace -> {
-            DeploymentList deploymentList = kubeClient.apps().deployments().inNamespace(namespace).list();
-            deploymentList.getItems().forEach(deployment -> {
-                DeployListVO deployListVO = DeployListVO.builder()
-                        .id(deployment.getMetadata().getUid())
-                        .name(deployment.getMetadata().getName())
-                        .readyReplicas(deployment.getStatus().getReadyReplicas())
-                        .updateReplicas(deployment.getStatus().getUpdatedReplicas())
-                        .replicas(deployment.getStatus().getReplicas())
-                        .namespace(deployment.getMetadata().getNamespace())
-                        .creationTimestamp(DateUtil.getTimestamp(deployment.getMetadata().getCreationTimestamp()))
-                        .build();
-                deployListVO.setStatus(getStatus(deployListVO.getReadyReplicas(), deployListVO.getUpdateReplicas(),
-                        deployListVO.getReplicas()));
-                List<String> images = new ArrayList<>();
-                deployment.getSpec().getTemplate().getSpec().getContainers().forEach(container -> {
-                    images.add(container.getImage());
-                });
-                deployListVO.setImages(images);
-                deploys.add(deployListVO);
+        DeploymentList deploymentList = kubeClient.apps().deployments().list();
+        deploymentList.getItems().forEach(deployment -> {
+            DeployListVO deployListVO = DeployListVO.builder()
+                    .id(deployment.getMetadata().getUid())
+                    .name(deployment.getMetadata().getName())
+                    .readyReplicas(deployment.getStatus().getReadyReplicas())
+                    .updateReplicas(deployment.getStatus().getUpdatedReplicas())
+                    .replicas(deployment.getStatus().getReplicas())
+                    .namespace(deployment.getMetadata().getNamespace())
+                    .creationTimestamp(DateUtil.getTimestamp(deployment.getMetadata().getCreationTimestamp()))
+                    .build();
+            if (deployListVO.getReplicas() == null){
+                deployListVO.setReplicas(0);
+            }
+            if (deployListVO.getReadyReplicas() == null){
+                deployListVO.setReadyReplicas(0);
+            }
+            if (deployListVO.getUpdateReplicas() == null){
+                deployListVO.setUpdateReplicas(0);
+            }
+            deployListVO.setStatus(getStatus(deployListVO.getReadyReplicas(), deployListVO.getUpdateReplicas(),
+                    deployListVO.getReplicas()));
+            List<String> images = new ArrayList<>();
+            deployment.getSpec().getTemplate().getSpec().getContainers().forEach(container -> {
+                images.add(container.getImage());
             });
+            deployListVO.setImages(images);
+            deploys.add(deployListVO);
         });
         logger.debug("invoke deployList end, result: {}", deploys);
-        return ResultUtil.success(deploys);
+        return ResponseUtil.success(deploys);
     }
 
 
@@ -109,7 +116,7 @@ public class DeployController {
             e.printStackTrace();
         }
         logger.debug("invoke deployDetail end, result: {}", deployVo);
-        return ResultUtil.success(deployVo);
+        return ResponseUtil.success(deployVo);
     }
 
     @GetMapping(value = "/deploy/upgrade")
@@ -130,15 +137,15 @@ public class DeployController {
                     .name(container.getName())
                     .image(container.getImage())
                     .build();
-            TagListDTO tagListDTO  = TagListDTO.builder()
-                    .repoNamespace(container.getImage().split("/")[1])
-                    .repoName(container.getImage().split("/")[2].split(":")[0])
+            TagQueryDTO tagQueryDTO  = TagQueryDTO.builder()
+                    .namespace(container.getImage().split("/")[1])
+                    .name(container.getImage().split("/")[2].split(":")[0])
                     .build();
-            containerUpgradeVO.setTags(dockerRepositoryService.tagList(tagListDTO).getTags());
+            containerUpgradeVO.setTags(dockerRepositoryService.tagList(tagQueryDTO).getTags());
             deployUpgradeVO.getContainers().add(containerUpgradeVO);
         });
         logger.debug("invoke getDeployUpgrade end, result: {}", deployUpgradeVO);
-        return ResultUtil.success(deployUpgradeVO);
+        return ResponseUtil.success(deployUpgradeVO);
     }
 
 
@@ -155,7 +162,7 @@ public class DeployController {
                 .withName(deployUpgradeDTO.getName())
                 .rolling()
                 .updateImage(params);
-        return ResultUtil.success();
+        return ResponseUtil.success();
     }
 
     @PutMapping("/deploy/restart")
@@ -167,14 +174,14 @@ public class DeployController {
                 .withName(deployDTO.getName())
                 .rolling()
                 .restart();
-        return ResultUtil.success();
+        return ResponseUtil.success();
     }
 
     @PutMapping("/deploy/upgrade/yaml")
     public ResponseDTO deployUpgradeYaml(@RequestBody DeployYamlDTO deployYamlDTO){
         InputStream inputStream = new ByteArrayInputStream(deployYamlDTO.getYaml().getBytes());
         kubeClient.load(inputStream).createOrReplace();
-        return ResultUtil.success();
+        return ResponseUtil.success();
     }
 
     public String getStatus(int readyReplicas, int updateReplicas, int replicas){

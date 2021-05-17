@@ -4,7 +4,7 @@ import cn.tinet.operationplatformservice.module.app.container.domain.vo.Containe
 import cn.tinet.operationplatformservice.module.app.deploy.domain.dto.DeployDTO;
 import cn.tinet.operationplatformservice.module.app.pod.domain.vo.PodListVO;
 import cn.tinet.operationplatformservice.utils.DateUtil;
-import cn.tinet.operationplatformservice.utils.ResultUtil;
+import cn.tinet.operationplatformservice.utils.ResponseUtil;
 import cn.tinet.operationplatformservice.vo.ResponseDTO;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.PodList;
@@ -88,7 +88,7 @@ public class PodController {
         });
 
         logger.debug("invoke podList end, result: {}", pods);
-        return ResultUtil.success(pods);
+        return ResponseUtil.success(pods);
     }
 
 }

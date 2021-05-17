@@ -8,10 +8,10 @@ import cn.tinet.operationplatformservice.vo.ResponseEnum;
  * @Time : 2021/3/3 21:55
  * @Author : zhaozhuang
  * @Email : zhaozhuang@ti-net.com.cn
- * @File : ResultUtil.java
+ * @File : ResponseUtil.java
  * @Software: IntelliJ IDEA
  **/
-public class ResultUtil {
+public class ResponseUtil {
 
     public static ResponseDTO success(Object data){
         ResponseDTO responseDTO = new ResponseDTO();

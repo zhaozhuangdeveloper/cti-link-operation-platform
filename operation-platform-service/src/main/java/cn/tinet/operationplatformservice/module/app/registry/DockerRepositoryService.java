@@ -1,7 +1,7 @@
 package cn.tinet.operationplatformservice.module.app.registry;
 
 
-import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagQueryDTO;
 import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO;
 
 /**
@@ -13,5 +13,5 @@ import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO
  * @description:
  **/
 public interface DockerRepositoryService {
-    public TagListVO tagList(TagListDTO tagListDTO);
+    public TagListVO tagList(TagQueryDTO tagQueryDTO);
 }

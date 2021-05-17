@@ -14,6 +14,7 @@ const axios = Axios.create({
     'Content-Type': 'application/json; charset=utf-8'
   }
 })
+
 let loading
 axios.interceptors.request.use(
   function (config) {

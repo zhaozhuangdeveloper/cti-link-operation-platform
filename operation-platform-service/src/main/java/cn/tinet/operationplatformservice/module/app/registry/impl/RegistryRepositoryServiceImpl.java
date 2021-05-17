@@ -3,7 +3,7 @@ package cn.tinet.operationplatformservice.module.app.registry.impl;
 import cn.tinet.operationplatformservice.module.app.registry.DockerRepositoryService;
 import cn.tinet.operationplatformservice.module.app.registry.domain.dto.Tag;
 import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagDTO;
-import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagListDTO;
+import cn.tinet.operationplatformservice.module.app.registry.domain.dto.TagQueryDTO;
 import cn.tinet.operationplatformservice.module.app.registry.domain.vo.TagListVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,10 @@ public class RegistryRepositoryServiceImpl implements DockerRepositoryService {
     public String registryEndpoint = null;
 
     @Override
-    public TagListVO tagList(TagListDTO tagListDTO) {
+    public TagListVO tagList(TagQueryDTO tagQueryDTO) {
         RestTemplate restTemplate = new RestTemplate();
         TagDTO tagDTO = restTemplate.getForObject(registryEndpoint + "/v2/"
-                + tagListDTO.getRepoNamespace() + "/" + tagListDTO.getRepoName() + "/tags/list", TagDTO.class);
+                + tagQueryDTO.getNamespace() + "/" + tagQueryDTO.getName() + "/tags/list", TagDTO.class);
         TagListVO tagListVO = TagListVO.builder()
                 .name(tagDTO.getName())
                 .tags(new ArrayList<>())
@@ -44,8 +44,8 @@ public class RegistryRepositoryServiceImpl implements DockerRepositoryService {
         for (String label : tagDTO.getTags()) {
             Tag tag = new Tag();
             tag.setLabel(label);
-            tag.setValue(registryEndpoint.substring(7) +"/" + tagListDTO.getRepoNamespace()
-                    + "/" + tagListDTO.getRepoName() + ":" + label);
+            tag.setValue(registryEndpoint.substring(7) +"/" + tagQueryDTO.getNamespace()
+                    + "/" + tagQueryDTO.getName() + ":" + label);
             tagListVO.getTags().add(tag);
         }
         return tagListVO;
