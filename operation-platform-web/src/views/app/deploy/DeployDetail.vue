@@ -3,7 +3,7 @@
     <div style="height: 40px; background: #FFF; padding-top: 10px">
       <el-page-header @back="goBack" :content="deploy.name">
       </el-page-header>
-      <el-button style="position: fixed; top: 60px; right: 10px" size="mini"
+      <el-button style="position: absolute; top: 60px; right: 10px" size="mini"
                  @click="editYaml" class="button">编辑YAML文件
       </el-button>
     </div>

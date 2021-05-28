@@ -23,7 +23,8 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/session/login");
+                .excludePathPatterns("/session/login")
+                .excludePathPatterns("/app/replicasets");
     }
 
 //    @Override

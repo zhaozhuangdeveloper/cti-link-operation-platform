@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/login/Login'
 import cookie from '@/lib/cookie'
 import { app } from './module/app'
+import { configure } from './module/configure'
 
 Vue.use(VueRouter)
 
@@ -25,7 +26,8 @@ const main = {
       component: () => import('@/views/home/Home'),
       name: 'Home'
     },
-    ...app
+    ...app,
+    ...configure
   ]
 }
 const routes = [
